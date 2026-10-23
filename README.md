@@ -46,5 +46,3 @@ GitHub Actions executa instalação reproduzível com npm ci, tipagem e os seis 
 Frontend: https://front.serverest.dev. API padrão: https://serverest.dev, configurável pelo campo `expose.apiUrl` em `cypress.config.ts` ou por `--expose apiUrl=...` na CLI do Cypress. São ambientes públicos compartilhados: indisponibilidade, reset da base e mudanças da aplicação podem afetar os testes. Falhas não são silenciadas. Screenshots de falha ficam em cypress/screenshots; vídeo está desativado para reduzir custo de execução.
 
 Para gerar relatórios JUnit localmente, execute npm run test:ci.
-
-Validação local em 23/10/2026: tipagem aprovada; 6/6 testes aprovados com `npm run test:ci` em Chrome 155 headless, Cypress 16.2.0 e Node 22.1.0. Foram gerados quatro relatórios JUnit.
