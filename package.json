@@ -1,0 +1,22 @@
+{
+  "name": "serverest-cypress-qa",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress run --browser chrome",
+    "test:e2e": "cypress run --browser chrome --spec \"cypress/e2e/**/*.cy.ts\"",
+    "test:api": "cypress run --browser chrome --spec \"cypress/api/**/*.cy.ts\"",
+    "cy:open": "cypress open",
+    "typecheck": "tsc --noEmit",
+    "test:ci": "cypress run --browser chrome --reporter junit --reporter-options mochaFile=test-results/results-[hash].xml,toConsole=true"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "cypress": "^16.2.0",
+    "typescript": "^7.0.2"
+  }
+}
