@@ -1,12 +1,19 @@
 import { apiUrl, userData, createUser, deleteUser } from '../support/data';
+
 describe('Autenticação de usuários', () => {
   let userId = '';
   let user: ReturnType<typeof userData>;
+
   beforeEach(() => {
-    userId = ''; user = userData();
-    createUser(user).then(id => { userId = id; });
+    userId = '';
+    user = userData();
+    createUser(user).then(id => {
+      userId = id;
+    });
   });
+
   afterEach(() => deleteUser(userId));
+
   it('não deve autenticar um usuário existente com senha incorreta', () => {
     cy.intercept('POST', apiUrl + '/login').as('login');
     cy.visit('/login');

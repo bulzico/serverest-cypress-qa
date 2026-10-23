@@ -6,51 +6,64 @@ describe('Cadastro de produtos', () => {
   let product: ReturnType<typeof productData>;
 
   beforeEach(() => {
-    userId = ''; token = ''; product = productData();
+    userId = '';
+    token = '';
+    product = productData();
     const admin = userData(true);
-    createUser(admin).then(id => { userId = id; });
+
+    createUser(admin).then(id => {
+      userId = id;
+    });
     login(admin).then(value => {
       token = value;
-      cy.visit('/admin/cadastrarprodutos', { onBeforeLoad(win) {
-        win.localStorage.setItem('serverest/userToken', token);
-        win.localStorage.setItem('serverest/userEmail', admin.email);
-        win.localStorage.setItem('serverest/userNome', admin.nome);
-      } });
+      cy.visit('/admin/cadastrarprodutos', {
+        onBeforeLoad(win) {
+          win.localStorage.setItem('serverest/userToken', token);
+          win.localStorage.setItem('serverest/userEmail', admin.email);
+          win.localStorage.setItem('serverest/userNome', admin.nome);
+        },
+      });
     });
   });
 
   afterEach(() => {
     cy.then(async () => {
-      const errors: string[] = [];
+      const cleanupErrors: string[] = [];
       // O token só permanece válido enquanto o administrador existir.
       try {
         if (token) {
-          const list = await fetch(`${apiUrl}/produtos?nome=${encodeURIComponent(product.nome)}`);
-          if (!list.ok) throw new Error(`consulta de produtos: HTTP ${list.status}`);
-          const { produtos } = await list.json() as { produtos: { _id: string }[] };
+          const productsResponse = await fetch(`${apiUrl}/produtos?nome=${encodeURIComponent(product.nome)}`);
+          if (!productsResponse.ok) throw new Error(`HTTP ${productsResponse.status}`);
+          const { produtos } = await productsResponse.json() as { produtos: { _id: string }[] };
+
           for (const item of produtos) {
             try {
-              const deleted = await fetch(`${apiUrl}/produtos/${item._id}`, {
-                method: 'DELETE', headers: { Authorization: token },
+              const deleteResponse = await fetch(`${apiUrl}/produtos/${item._id}`, {
+                method: 'DELETE',
+                headers: { Authorization: token },
               });
-              if (!deleted.ok) throw new Error(`HTTP ${deleted.status}`);
+              if (!deleteResponse.ok) throw new Error(`HTTP ${deleteResponse.status}`);
             } catch (error) {
-              errors.push(`produto ${item._id}: ${String(error)}`);
+              cleanupErrors.push(`produto ${item._id}: ${String(error)}`);
             }
           }
         }
       } catch (error) {
-        errors.push(`consulta de produtos: ${String(error)}`);
+        cleanupErrors.push(`consulta de produtos: ${String(error)}`);
       }
+
       try {
         if (userId) {
-          const deleted = await fetch(`${apiUrl}/usuarios/${userId}`, { method: 'DELETE' });
-          if (!deleted.ok) throw new Error(`HTTP ${deleted.status}`);
+          const deleteResponse = await fetch(`${apiUrl}/usuarios/${userId}`, { method: 'DELETE' });
+          if (!deleteResponse.ok) throw new Error(`HTTP ${deleteResponse.status}`);
         }
       } catch (error) {
-        errors.push(`administrador ${userId}: ${String(error)}`);
+        cleanupErrors.push(`administrador ${userId}: ${String(error)}`);
       }
-      if (errors.length) throw new Error(`Falha na limpeza: ${errors.join('; ')}`);
+
+      if (cleanupErrors.length) {
+        throw new Error(`Falha na limpeza: ${cleanupErrors.join('; ')}`);
+      }
     });
   });
 

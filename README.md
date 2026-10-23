@@ -39,7 +39,7 @@ O frontend atual recebe um arquivo no input, mas envia o campo imagem como texto
 
 ## CI/CD
 
-GitHub Actions executa instalação reproduzível com npm ci, tipagem e os seis testes em Chrome em push, pull request ou disparo manual. Publica relatório JUnit e screenshots de falhas por sete dias. Não há deploy: este repositório testa uma aplicação externa. A [execução de 23/10/2026](https://github.com/bulzico/serverest-cypress-qa/actions/runs/39975000303) passou com 6/6 testes; ela corresponde ao commit fbedc58, anterior aos ajustes finais deste README e das Actions.
+GitHub Actions executa instalação reproduzível com npm ci, tipagem e os seis testes em Chrome em push, pull request ou disparo manual. Publica relatório JUnit e screenshots de falhas por sete dias. Não há deploy: este repositório testa uma aplicação externa. A [execução do último commit publicado, 4fcaeef](https://github.com/bulzico/serverest-cypress-qa/actions/runs/39977250832) passou com 6/6 testes.
 
 ## Ambiente e evidências
 
@@ -47,4 +47,4 @@ Frontend: https://front.serverest.dev. API padrão: https://serverest.dev, confi
 
 Para gerar relatórios JUnit localmente, execute npm run test:ci.
 
-Validação local em 23/10/2026, após os ajustes finais: tipagem aprovada; 6/6 testes aprovados com `npm run test:ci` em Chrome 155 headless, Cypress 16.2.0 e Node 22.1.0. Foram gerados quatro relatórios JUnit. As novas versões das GitHub Actions ainda não foram executadas remotamente.
+Validação local em 23/10/2026: tipagem aprovada; 6/6 testes aprovados com `npm run test:ci` em Chrome 155 headless, Cypress 16.2.0 e Node 22.1.0. Foram gerados quatro relatórios JUnit.

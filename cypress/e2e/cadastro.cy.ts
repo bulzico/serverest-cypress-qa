@@ -1,11 +1,17 @@
 import { apiUrl, userData, deleteUser } from '../support/data';
+
 describe('Cadastro de usuários', () => {
   let user: ReturnType<typeof userData>;
-  beforeEach(() => { user = userData(); });
+
+  beforeEach(() => {
+    user = userData();
+  });
+
   afterEach(() => {
     cy.request({ url: apiUrl + '/usuarios', qs: { email: user.email }, log: false })
       .then(({ body }) => body.usuarios.forEach((item: { _id: string }) => deleteUser(item._id)));
   });
+
   it('deve cadastrar um novo usuário com dados válidos', () => {
     cy.intercept('POST', apiUrl + '/usuarios').as('register');
     cy.visit('/cadastrarusuarios');

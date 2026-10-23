@@ -1,7 +1,12 @@
 import { apiUrl, userData, createUser, deleteUser } from '../support/data';
+
 describe('API de usuários', () => {
   let userId = '';
-  beforeEach(() => { userId = ''; });
+
+  beforeEach(() => {
+    userId = '';
+  });
+
   afterEach(() => deleteUser(userId));
 
   it('cria usuário e consulta os dados persistidos', () => {
@@ -17,7 +22,9 @@ describe('API de usuários', () => {
 
   it('rejeita e-mail duplicado sem criar um segundo usuário', () => {
     const user = userData();
-    createUser(user).then(id => { userId = id; });
+    createUser(user).then(id => {
+      userId = id;
+    });
     cy.request({ method: 'POST', url: apiUrl + '/usuarios', body: user,
       failOnStatusCode: false, log: false }).then(({ status, body }) => {
       expect(status).to.eq(400);
@@ -34,7 +41,9 @@ describe('API de usuários', () => {
     cy.request({ method: 'POST', url: apiUrl + '/usuarios', body: user,
       failOnStatusCode: false, log: false }).then(({ status, body }) => {
       // Guarda eventual criação indevida para limpeza mesmo se o contrato falhar.
-      if (body._id) userId = body._id;
+      if (body._id) {
+        userId = body._id;
+      }
       expect(status).to.eq(400);
       expect(body).to.deep.eq({ email: 'email deve ser um email válido' });
     });

@@ -1,7 +1,7 @@
 {
   "name": "serverest-cypress-qa",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Testes E2E e de API do ServeRest com Cypress e TypeScript para o desafio QA Sênior MOUTS.",
   "scripts": {
     "test": "cypress run --browser chrome",
     "test:e2e": "cypress run --browser chrome --spec \"cypress/e2e/**/*.cy.ts\"",
@@ -11,9 +11,8 @@
     "test:ci": "cypress run --browser chrome --reporter junit --reporter-options mochaFile=test-results/results-[hash].xml,toConsole=true"
   },
   "keywords": [],
-  "author": "",
+  "author": "Cesar Bulzico",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@types/node": "^26.6.5",
     "cypress": "^16.2.0",
