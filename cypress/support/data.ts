@@ -1,4 +1,4 @@
-export const apiUrl = 'https://serverest.dev';
+export const apiUrl = Cypress.expose('apiUrl') as string;
 export const userData = (admin = false) => {
   const id = crypto.randomUUID();
   return { nome: 'QA MOUTS ' + id, email: 'qa.' + id + '@example.com',

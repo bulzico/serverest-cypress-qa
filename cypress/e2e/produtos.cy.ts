@@ -1,4 +1,4 @@
-import { apiUrl, userData, productData, createUser, login, deleteUser } from '../support/data';
+import { apiUrl, userData, productData, createUser, login } from '../support/data';
 
 describe('Cadastro de produtos', () => {
   let userId = '';
@@ -20,15 +20,38 @@ describe('Cadastro de produtos', () => {
   });
 
   afterEach(() => {
-    // Busca pelo nome exclusivo também limpa se uma asserção falhar após o POST.
-    if (token) cy.request({ url: apiUrl + '/produtos', qs: { nome: product.nome } })
-      .then(({ body }) => {
-        body.produtos.forEach((item: { _id: string }) => {
-          cy.request({ method: 'DELETE', url: apiUrl + '/produtos/' + item._id,
-            headers: { Authorization: token }, log: false }).its('status').should('eq', 200);
-        });
-      });
-    deleteUser(userId);
+    cy.then(async () => {
+      const errors: string[] = [];
+      // O token só permanece válido enquanto o administrador existir.
+      try {
+        if (token) {
+          const list = await fetch(`${apiUrl}/produtos?nome=${encodeURIComponent(product.nome)}`);
+          if (!list.ok) throw new Error(`consulta de produtos: HTTP ${list.status}`);
+          const { produtos } = await list.json() as { produtos: { _id: string }[] };
+          for (const item of produtos) {
+            try {
+              const deleted = await fetch(`${apiUrl}/produtos/${item._id}`, {
+                method: 'DELETE', headers: { Authorization: token },
+              });
+              if (!deleted.ok) throw new Error(`HTTP ${deleted.status}`);
+            } catch (error) {
+              errors.push(`produto ${item._id}: ${String(error)}`);
+            }
+          }
+        }
+      } catch (error) {
+        errors.push(`consulta de produtos: ${String(error)}`);
+      }
+      try {
+        if (userId) {
+          const deleted = await fetch(`${apiUrl}/usuarios/${userId}`, { method: 'DELETE' });
+          if (!deleted.ok) throw new Error(`HTTP ${deleted.status}`);
+        }
+      } catch (error) {
+        errors.push(`administrador ${userId}: ${String(error)}`);
+      }
+      if (errors.length) throw new Error(`Falha na limpeza: ${errors.join('; ')}`);
+    });
   });
 
   it('cadastra produto com imagem selecionada e confirma persistência e listagem', () => {
